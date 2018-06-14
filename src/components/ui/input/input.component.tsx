@@ -4,18 +4,22 @@ import * as styles from './input.component.css';
 
 const Input: React.SFC<any> = (props: any): JSX.Element => {
   let inputElement: JSX.Element;
+  const inputClasses: string = [
+    styles.InputElement,
+    (props.invalid && props.shouldValidate && props.touched) && styles.Invalid
+  ].join(' ');
 
   switch (props.elementType) {
     case 'input':
       inputElement = <input
-        className={styles.InputElement}
+        className={inputClasses}
         {...props.elementConfig}
         value={props.value}
         onChange={props.changed} />;
       break;
     case 'textarea':
       inputElement = <textarea
-        className={styles.InputElement}
+        className={inputClasses}
         {...props.elementConfig}
         value={props.value}
         onChange={props.changed} />;
@@ -23,7 +27,7 @@ const Input: React.SFC<any> = (props: any): JSX.Element => {
     case 'select':
       inputElement = (
         <select
-          className={styles.InputElement}
+          className={inputClasses}
           value={props.value}
           onChange={props.changed}>
           {props.elementConfig.options.map((option: any) => (
@@ -38,7 +42,7 @@ const Input: React.SFC<any> = (props: any): JSX.Element => {
       break;
     default:
       inputElement = <input
-        className={styles.InputElement}
+        className={inputClasses}
         {...props.elementConfig}
         value={props.value}
         onChange={props.changed} />;

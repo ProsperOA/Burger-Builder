@@ -6,13 +6,15 @@ import ButtonTypes from '../../../models/button-types.model';
 interface PropTypes {
   buttonType: ButtonTypes;
   children:   any;
+  disabled?:  boolean;
   clicked?:   (...args: any[]) => any;
 }
 
 const Button: React.SFC<PropTypes> = (props: PropTypes): JSX.Element => (
   <button
     className={[styles.Button, styles[props.buttonType]].join(' ')}
-    onClick={props.clicked}>
+    onClick={props.clicked}
+    disabled={props.disabled}>
     {props.children}
   </button>
 );

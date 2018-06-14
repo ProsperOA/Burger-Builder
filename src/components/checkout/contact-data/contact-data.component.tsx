@@ -22,7 +22,14 @@ class ContactData extends React.Component<PropTypes, any> {
           'type': 'text',
           placeholder: 'Full Name'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true,
+          minLength: 1,
+          maxLength: 20
+        },
+        valid: false,
+        touched: false
       },
       email: {
         elementType: 'input',
@@ -30,7 +37,12 @@ class ContactData extends React.Component<PropTypes, any> {
           'type': 'email',
           placeholder: 'Email'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false
       },
       address: {
         elementType: 'input',
@@ -38,7 +50,12 @@ class ContactData extends React.Component<PropTypes, any> {
           'type': 'text',
           placeholder: 'Address'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false,
+        touched: false
       },
       deliveryMethod: {
         elementType: 'select',
@@ -48,9 +65,11 @@ class ContactData extends React.Component<PropTypes, any> {
             {value: 'cheapest', displayValue: 'Cheapest'}
           ]
         },
-        value: 'fastest'
+        value: 'fastest',
+        valid: true
       }
     },
+    formIsValid: false,
     loading: false
   }
 
@@ -85,10 +104,44 @@ class ContactData extends React.Component<PropTypes, any> {
     const updatedOrderForm: any = cloneDeep(this.state.orderForm);
     const updatedFormElement: any = updatedOrderForm[inputID];
 
-    updatedFormElement.value = e.currentTarget.value;
     updatedOrderForm[inputID] = updatedFormElement;
 
-    this.setState({ orderForm: updatedOrderForm });
+    updatedFormElement.touched = true;
+    updatedFormElement.value   = e.currentTarget.value;
+    updatedFormElement.valid   = this.validate(
+      updatedFormElement.value,
+      updatedFormElement.validation
+    );
+
+    let formIsValid: boolean = true;
+    for (inputID of Object.keys(updatedOrderForm)) {
+      formIsValid = updatedOrderForm[inputID].valid && formIsValid;
+    }
+
+    this.setState({
+      orderForm: updatedOrderForm,
+      formIsValid
+    });
+  }
+
+  public validate = (value: any, rules: any): boolean => {
+    let valid: boolean = true;
+
+    if (!rules) return valid;
+
+    if (rules.required) {
+      valid = value.trim() !== '' && valid;
+    }
+
+    if (rules.minLength) {
+      valid = value.length >= rules.minLength && valid;
+    }
+
+    if (rules.maxLength) {
+      valid = value.length <= rules.maxLength && valid;
+    }
+
+    return valid;
   }
 
   public render(): JSX.Element {
@@ -113,9 +166,15 @@ class ContactData extends React.Component<PropTypes, any> {
                 elementConfig={element.config.elementConfig}
                 placeholder={element.config.placeholder}
                 value={element.config.value}
+                touched={element.config.touched}
+                shouldValidate={element.config.validation}
+                invalid={!element.config.valid}
                 changed={this.inputChangedHandler.bind(this, element.id)} />
             ))}
-            <Button buttonType="Success" clicked={this.orderHandler}>
+            <Button
+              buttonType="Success"
+              clicked={this.orderHandler}
+              disabled={!this.state.formIsValid}>
               ORDER
             </Button>
           </form>}

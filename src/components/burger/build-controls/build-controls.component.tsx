@@ -9,8 +9,8 @@ interface PropTypes {
   ingredientAdded:   (ingredient: string) => void;
   ingredientRemoved: (ingredient: string) => void;
   ordered:           () => void;
+  purchaseable:      () => boolean;
   price:             number;
-  purchaseable:      boolean;
 }
 
 class BuildControls extends React.Component<PropTypes, {}> {
@@ -36,7 +36,7 @@ class BuildControls extends React.Component<PropTypes, {}> {
         ))}
         <button
           className={styles.OrderButton}
-          disabled={!this.props.purchaseable}
+          disabled={!this.props.purchaseable()}
           onClick={this.props.ordered}>
           ORDER NOW
         </button>

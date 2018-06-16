@@ -91,8 +91,8 @@ const mapStateToProps = ({ burgerBuilder: { ingredients, totalPrice }}: any) => 
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<actions.BurgerBuilderAction>) => ({
-  onIngredientAdded:   (name: string) => dispatch(actions.ingredientAdded(name)),
-  onIngredientRemoved: (name: string) => dispatch(actions.ingredientRemoved(name))
+  onIngredientAdded:   (name: string) => dispatch(actions.addIngredient(name)),
+  onIngredientRemoved: (name: string) => dispatch(actions.removeIngredient(name))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(

@@ -7,7 +7,7 @@ interface PropTypes {
   buttonType: ButtonTypes;
   children:   any;
   disabled?:  boolean;
-  clicked?:   (...args: any[]) => any;
+  clicked?:   any;
 }
 
 const Button: React.SFC<PropTypes> = (props: PropTypes): JSX.Element => (

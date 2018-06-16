@@ -3,7 +3,7 @@ import * as _                  from 'lodash';
 import { connect, Dispatch   } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 import axios                   from '../../axios-instances/orders.instance';
-import * as actions            from '../../store/actions/burger-builder.actions';
+import * as actions            from '../../store/actions';
 import { StoreState          } from '../../store/reducers/burger-builder.reducer';
 
 import Burger           from '../burger/burger.component';

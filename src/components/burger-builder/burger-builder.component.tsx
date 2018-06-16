@@ -45,12 +45,7 @@ class BurgerBuilder extends React.Component<PropTypes, State> {
 
   public purchaseCancelHandler = (): void => this.setState({ purchasing: false });
 
-  public purchaseContinueHandler = (): void => {
-    this.props.history.push('/checkout', {
-      ingredients: this.props.ingredients,
-      totalPrice: this.props.totalPrice
-    });
-  };
+  public purchaseContinueHandler = (): void => this.props.history.push('/checkout');
 
   public render(): JSX.Element {
     const errJSX: JSX.Element = (

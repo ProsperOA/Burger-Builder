@@ -1,25 +1,15 @@
-import * as React from 'react';
+import * as React                     from 'react';
+import { connect                    } from 'react-redux';
 import { Route, RouteComponentProps } from 'react-router-dom';
+import { StoreState                 } from '../../store/reducers/burger-builder.reducer';
 
 import CheckoutSummary from './checkout-summary/checkout-summary.component';
 import ContactData     from '../checkout/contact-data/contact-data.component';
 import Spinner         from '../ui/spinner/spinner.component';
 
-interface State {
-  ingredients: {[key: string]: number};
-  totalPrice:  number;
-}
+interface PropTypes extends StoreState, RouteComponentProps<{}>{};
 
-class Checkout extends React.Component<RouteComponentProps<{}>, State> {
-  public state: State = {
-    ingredients: null,
-    totalPrice:  0
-  };
-
-  public componentDidMount(): void {
-    const { ingredients, totalPrice } = this.props.location.state;
-    this.setState({ ingredients, totalPrice });
-  };
+class Checkout extends React.Component<PropTypes, {}> {
 
   public checkoutCancelledHandler = (): void => this.props.history.goBack();
 
@@ -27,26 +17,24 @@ class Checkout extends React.Component<RouteComponentProps<{}>, State> {
     this.props.history.replace('/checkout/contact-data');
   };
 
-  public renderContactData = (): JSX.Element => (
-    <ContactData
-      ingredients={this.state.ingredients}
-      totalPrice={this.state.totalPrice} />
-  );
-
   public render(): JSX.Element {
     return (
       <div>
-        {!this.state.ingredients || !this.state.totalPrice ? <Spinner /> :
+        {!this.props.ingredients ? <Spinner /> :
           <CheckoutSummary
-            ingredients={this.state.ingredients}
+            ingredients={this.props.ingredients}
             checkoutCancelled={this.checkoutCancelledHandler}
             checkoutContinued={this.checkoutContinuedHandler} />}
           <Route
             path={this.props.match.path + '/contact-data'}
-            render={this.renderContactData} />
+            component={ContactData} />
       </div>
     );
   }
 }
 
-export default Checkout;
+const mapStateToProps = ({ burgerBuilder: { ingredients }}: any) => ({
+  ingredients
+});
+
+export default connect(mapStateToProps, null)(Checkout);

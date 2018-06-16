@@ -1,17 +1,16 @@
-import * as React from 'react';
-import { cloneDeep } from 'lodash';
+import * as React                          from 'react';
+import { connect                         } from 'react-redux';
+import { cloneDeep                       } from 'lodash';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import axios from '../../../axios-instances/orders.instance';;
+import axios                               from '../../../axios-instances/orders.instance';;
+import { StoreState                      } from '../../../store/reducers/burger-builder.reducer';
 
 import * as styles from './contact-data.component.css';
-import Button from '../../ui/button/button.component';
-import Spinner from '../../ui/spinner/spinner.component';
-import Input from '../../ui/input/input.component';
+import Button      from '../../ui/button/button.component';
+import Spinner     from '../../ui/spinner/spinner.component';
+import Input       from '../../ui/input/input.component';
 
-interface PropTypes extends RouteComponentProps<{}> {
-  ingredients: any;
-  totalPrice:  number;
-}
+interface PropTypes extends StoreState, RouteComponentProps<{}>{};
 
 class ContactData extends React.Component<PropTypes, any> {
   public state: any = {
@@ -183,4 +182,10 @@ class ContactData extends React.Component<PropTypes, any> {
   }
 }
 
-export default withRouter(ContactData);
+const mapStateToProps = ({ burgerBuilder: { ingredients, totalPrice }}: any) => ({
+  ingredients, totalPrice
+});
+
+export default connect(mapStateToProps, null)(
+  withRouter(ContactData)
+);

@@ -6,14 +6,21 @@ import axios                               from '../../../axios-instances/orders
 import { StoreState                      } from '../../../store/reducers/burger-builder.reducer';
 
 import * as styles from './contact-data.component.css';
+import FormControl from '../../../models/form-control.model';
 import Button      from '../../ui/button/button.component';
 import Spinner     from '../../ui/spinner/spinner.component';
 import Input       from '../../ui/input/input.component';
 
 interface PropTypes extends StoreState, RouteComponentProps<{}>{};
 
-class ContactData extends React.Component<PropTypes, any> {
-  public state: any = {
+interface State {
+  orderForm:   {[name: string]: FormControl};
+  formIsValid: boolean;
+  loading:     boolean;
+}
+
+class ContactData extends React.Component<PropTypes, State> {
+  public state: State = {
     orderForm: {
       name: {
         elementType: 'input',

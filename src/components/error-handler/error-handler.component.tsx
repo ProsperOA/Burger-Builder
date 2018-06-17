@@ -22,7 +22,7 @@ const WithErrorHandler = (Component: React.ComponentClass, instance: AxiosInstan
       responseInterceptor: null
     };
 
-    public componentWillmount(): void {
+    public componentWillMount(): void {
       this.state.requestInterceptor = instance.interceptors.request.use(
         (req: AxiosRequestConfig) => {
           this.setState({ error: null });

@@ -16,30 +16,21 @@ import withErrorHandler from '../error-handler/error-handler.component';
 interface PropTypes extends StoreState, RouteComponentProps<{}> {
   onIngredientAdded:   (name: string) => Dispatch<actions.BurgerBuilderAction>;
   onIngredientRemoved: (name: string) => Dispatch<actions.BurgerBuilderAction>;
+  initIngredients:     ()             => Dispatch<actions.BurgerBuilderAction>;
 }
 
 interface State {
-  purchasing:   boolean;
-  loading:      boolean;
-  error:        boolean;
+  purchasing: boolean;
 }
 
 class BurgerBuilder extends React.Component<PropTypes, State> {
-  public state: State = {
-    purchasing:   false,
-    loading:      false,
-    error:        false
-  };
+  public state: State = { purchasing: false };
 
   public componentDidMount(): void {
-    // axios.get('/ingredients.json')
-    //   .then(res => this.setState({ ingredients: res.data }))
-    //   .catch(err => this.setState({ error: true }));
+    this.props.initIngredients();
   }
 
-  public updatePurchaseState = (): boolean => (
-    _.sum(_.values(this.props.ingredients)) > 0
-  );
+  public updatePurchaseState = (): boolean => _.sum(_.values(this.props.ingredients)) > 0;
 
   public purchaseHandler = (): void => this.setState({ purchasing: true });
 
@@ -49,7 +40,7 @@ class BurgerBuilder extends React.Component<PropTypes, State> {
 
   public render(): JSX.Element {
     const errJSX: JSX.Element = (
-      <p style={{textAlign: 'center', margin: 15}}>Ingredients cant be loaded</p>
+      <p style={{textAlign: 'center', margin: 15}}>Ingredients cannot be loaded</p>
     );
 
     const disableInfo: any = {...this.props.ingredients}
@@ -62,7 +53,7 @@ class BurgerBuilder extends React.Component<PropTypes, State> {
         <Modal
           show={this.state.purchasing}
           modalClosed={this.purchaseCancelHandler}>
-          {!this.props.ingredients || this.state.loading ? <Spinner /> :
+          {!this.props.ingredients ? <Spinner /> :
             <OrderSummary
               ingredients={this.props.ingredients}
               price={this.props.totalPrice}
@@ -70,7 +61,7 @@ class BurgerBuilder extends React.Component<PropTypes, State> {
               purchaseContinued={this.purchaseContinueHandler} />}
         </Modal>
         {!this.props.ingredients ?
-          (this.state.error ? errJSX : <Spinner />) :
+          (this.props.error ? errJSX : <Spinner />) :
           <React.Fragment>
             <Burger ingredients={this.props.ingredients} />
             <BuildControls
@@ -86,13 +77,16 @@ class BurgerBuilder extends React.Component<PropTypes, State> {
   }
 }
 
-const mapStateToProps = ({ burgerBuilder: { ingredients, totalPrice }}: any) => ({
-  ingredients, totalPrice
+const mapStateToProps = ({ burgerBuilder: state}: any) => ({
+  ingredients: state.ingredients,
+  totalPrice:  state.totalPrice,
+  error:       state.error
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<actions.BurgerBuilderAction>) => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
   onIngredientAdded:   (name: string) => dispatch(actions.addIngredient(name)),
-  onIngredientRemoved: (name: string) => dispatch(actions.removeIngredient(name))
+  onIngredientRemoved: (name: string) => dispatch(actions.removeIngredient(name)),
+  initIngredients:     ()             => dispatch(actions.initIngredients())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(

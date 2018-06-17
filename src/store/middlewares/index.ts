@@ -6,8 +6,9 @@ import {
   Action,
   Dispatch
 } from 'redux';
+import thunk from 'redux-thunk';
 
-export const logger: Middleware = (s: Store) => (next: Dispatch) => (action: Action) => {
+const logger: Middleware = (s: Store) => (next: Dispatch) => (action: Action) => {
   console.log(action);
   console.log(s.getState);
   return next(action);
@@ -15,4 +16,4 @@ export const logger: Middleware = (s: Store) => (next: Dispatch) => (action: Act
 
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-export default composeEnhancers(applyMiddleware(logger));
+export default composeEnhancers(applyMiddleware(logger, thunk));

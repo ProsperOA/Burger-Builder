@@ -1,24 +1,18 @@
 import { Reducer } from 'redux';
+import * as types from '../actions/types';
 import { BurgerBuilderAction } from '../actions/burger-builder.actions';
 import { INGREDIENT_PRICES } from '../../models/ingredient.model';
-import {
-  ADD_INGREDIENT,
-  REMOVE_INGREDIENT
-} from '../actions/types';
 
 export interface StoreState {
   ingredients:  any;
   totalPrice:   number;
+  error:        boolean;
 }
 
 export const initialState: StoreState = {
-  ingredients:  {
-    salad:  0,
-    bacon:  0,
-    cheese: 0,
-    meat:   0
-  },
-  totalPrice: 4,
+  ingredients: null,
+  totalPrice:  4,
+  error:       false
 };
 
 enum IngredientMethods {
@@ -59,10 +53,14 @@ const editIngredients = (
 
 const reducer: Reducer = (state: StoreState = initialState, action: BurgerBuilderAction): StoreState => {
   switch (action.type) {
-    case ADD_INGREDIENT:
+    case types.ADD_INGREDIENT:
       return editIngredients(IngredientMethods.add, state, action.payload);
-    case REMOVE_INGREDIENT:
+    case types.REMOVE_INGREDIENT:
       return editIngredients(IngredientMethods.remove, state, action.payload);
+    case types.SET_INGREDIENTS:
+      return {...state, ingredients: action.payload, error: false};
+    case types.FETCH_INGREDIENTS_FAILED:
+      return {...state, error: true};
     default:
       break;
   }

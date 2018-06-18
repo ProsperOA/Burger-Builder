@@ -100,8 +100,6 @@ class ContactData extends React.Component<PropTypes, State> {
     };
 
     this.props.onOrderBurger(order);
-    // FIXME: Redirect after burger purchase
-    this.props.history.push('/');
   }
 
   public inputChangedHandler = (

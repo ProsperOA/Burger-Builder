@@ -1,12 +1,14 @@
-import * as React                     from 'react';
-import { connect                    } from 'react-redux';
+import * as React                               from 'react';
+import { connect                              } from 'react-redux';
 import { Route, Redirect, RouteComponentProps } from 'react-router-dom';
-import { StoreState                 } from '../../store/reducers/burger-builder.reducer';
+import { AppState                             } from '../../store/reducers';
+import { StoreState as BurgerBuilderState     } from '../../store/reducers/burger-builder.reducer';
+import { StoreState as OrderState             } from '../../store/reducers/order.reducer';
 
 import CheckoutSummary from './checkout-summary/checkout-summary.component';
 import ContactData     from '../checkout/contact-data/contact-data.component';
 
-interface PropTypes extends StoreState, RouteComponentProps<{}>{};
+interface PropTypes extends OrderState, BurgerBuilderState, RouteComponentProps<{}>{};
 
 class Checkout extends React.Component<PropTypes, {}> {
 
@@ -19,7 +21,7 @@ class Checkout extends React.Component<PropTypes, {}> {
   public render(): JSX.Element {
     return (
       <div>
-        {!this.props.ingredients ? <Redirect to="/" /> :
+        {!this.props.ingredients || this.props.purchased ? <Redirect to="/" /> :
           <React.Fragment>
             <CheckoutSummary
               ingredients={this.props.ingredients}
@@ -34,8 +36,9 @@ class Checkout extends React.Component<PropTypes, {}> {
   }
 }
 
-const mapStateToProps = ({ burgerBuilder: { ingredients }}: any) => ({
-  ingredients
+const mapStateToProps = ({ burgerBuilder, order }: AppState) => ({
+  ingredients: burgerBuilder.ingredients,
+  purchased:   order.purchased
 });
 
 export default connect(mapStateToProps)(Checkout);

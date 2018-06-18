@@ -83,7 +83,7 @@ const mapStateToProps = ({ burgerBuilder: state}: any) => ({
   error:       state.error
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
+const mapDispatchToProps = (dispatch: Dispatch<actions.BurgerBuilderAction>) => ({
   onIngredientAdded:   (name: string) => dispatch(actions.addIngredient(name)),
   onIngredientRemoved: (name: string) => dispatch(actions.removeIngredient(name)),
   initIngredients:     ()             => dispatch(actions.initIngredients())

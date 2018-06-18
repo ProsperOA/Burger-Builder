@@ -7,6 +7,7 @@ const NavigationItems: React.SFC<{}> = (props: {}): JSX.Element => (
   <ul className={styles.NavigationItems}>
     <NavigationItem link="/">Burger Builder</NavigationItem>
     <NavigationItem link="/orders">Orders</NavigationItem>
+    <NavigationItem link="/auth">Authenticate</NavigationItem>
   </ul>
 );
 

@@ -33,3 +33,12 @@ export type  FETCH_ORDERS_SUCCESS =  typeof FETCH_ORDERS_SUCCESS;
 
 export const FETCH_ORDERS_FAILED = 'FETCH_ORDERS_FAILED';
 export type  FETCH_ORDERS_FAILED =  typeof FETCH_ORDERS_FAILED;
+
+export const AUTH_START = 'AUTH_START';
+export type  AUTH_START =  typeof AUTH_START;
+
+export const AUTH_SUCCESS = 'AUTH_SUCCESS';
+export type  AUTH_SUCCESS =  typeof AUTH_SUCCESS;
+
+export const AUTH_FAIL = 'AUTH_FAIL';
+export type  AUTH_FAIL =  typeof AUTH_FAIL;

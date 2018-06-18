@@ -11,3 +11,8 @@ export {
   purchaseBurger,
   fetchOrders,
 } from './order.actions';
+
+export {
+  AuthAction,
+  auth
+} from './auth.actions';

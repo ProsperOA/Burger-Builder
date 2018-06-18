@@ -1,8 +1,10 @@
 import * as React                           from 'react';
 import { connect                          } from 'react-redux';
 import { Dispatch                         } from 'redux';
+import { RouteComponentProps } from 'react-router-dom';
 import { cloneDeep                        } from 'lodash';
-import axios                                from '../../../axios-instances/orders.instance';;
+import axios                                from '../../../axios-instances/orders.instance';
+import { AppState                         } from '../../../store/reducers';
 import { StoreState as OrderState         } from '../../../store/reducers/order.reducer';
 import { StoreState as BurgerBuilderState } from '../../../store/reducers/burger-builder.reducer';
 
@@ -14,8 +16,8 @@ import Spinner          from '../../ui/spinner/spinner.component';
 import Input            from '../../ui/input/input.component';
 import withErrorHandler from '../../error-handler/error-handler.component';
 
-interface PropTypes extends OrderState, BurgerBuilderState {
-  onOrderBurger: (orderData: object) => Dispatch<actions.OrderActions>;
+interface PropTypes extends OrderState, BurgerBuilderState, RouteComponentProps<{}> {
+  onOrderBurger: (orderData: object) => Dispatch<actions.OrderAction>;
 }
 
 interface State {
@@ -98,6 +100,8 @@ class ContactData extends React.Component<PropTypes, State> {
     };
 
     this.props.onOrderBurger(order);
+    // FIXME: Redirect after burger purchase
+    this.props.history.push('/');
   }
 
   public inputChangedHandler = (
@@ -186,13 +190,13 @@ class ContactData extends React.Component<PropTypes, State> {
   }
 }
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
   ingredients: state.burgerBuilder.ingredients,
   totalPrice:  state.burgerBuilder.totalPrice,
   loading:     state.order.loading
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<actions.OrderActions>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<actions.OrderAction>) => ({
   onOrderBurger: (orderData: object) => dispatch(actions.purchaseBurger(orderData))
 });
 

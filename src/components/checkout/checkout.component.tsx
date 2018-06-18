@@ -38,4 +38,4 @@ const mapStateToProps = ({ burgerBuilder: { ingredients }}: any) => ({
   ingredients
 });
 
-export default connect(mapStateToProps, null)(Checkout);
+export default connect(mapStateToProps)(Checkout);

@@ -9,37 +9,31 @@ import axios, {
 import Modal from '../ui/modal/modal.component';
 
 interface State {
-  error:               AxiosError;
-  requestInterceptor:  number;
-  responseInterceptor: number;
+  error: AxiosError;
 }
 
 const WithErrorHandler = (Component: React.ComponentClass, instance: AxiosInstance): React.ComponentClass => {
   return class extends React.Component<any, State> {
-    public state: Readonly<State> = {
-      error:               null,
-      requestInterceptor:  null,
-      responseInterceptor: null
-    };
+    public state: Readonly<State> = { error: null };
+    private requestInterceptor:  number;
+    private responseInterceptor: number;
 
     public componentWillMount(): void {
-      const requestInterceptor: number = instance.interceptors.request.use(
+      this.requestInterceptor = instance.interceptors.request.use(
         (req: AxiosRequestConfig) => {
           this.setState({ error: null });
           return req;
         },
         (error: AxiosError) => this.setState({ error }));
 
-      const responseInterceptor: number = instance.interceptors.response.use(
+      this.responseInterceptor = instance.interceptors.response.use(
         (res:   AxiosResponse) => res,
         (error: AxiosError) => this.setState({ error }));
-
-      this.setState({ requestInterceptor, responseInterceptor });
     };
 
     public componentWillUnmount(): void {
-      axios.interceptors.request.eject(this.state.requestInterceptor);
-      axios.interceptors.response.eject(this.state.responseInterceptor);
+      axios.interceptors.request.eject(this.requestInterceptor);
+      axios.interceptors.response.eject(this.responseInterceptor);
     };
 
     public errorConfirmedHandler = (): void => this.setState({ error: null });

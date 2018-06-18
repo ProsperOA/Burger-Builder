@@ -4,7 +4,9 @@ import { connect, Dispatch   } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 import axios                   from '../../axios-instances/orders.instance';
 import * as actions            from '../../store/actions';
-import { StoreState          } from '../../store/reducers/burger-builder.reducer';
+import { AppState            } from '../../store/reducers';
+import { StoreState as BurgerBuilderState } from '../../store/reducers/burger-builder.reducer';
+import { StoreState as OrderState } from '../../store/reducers/order.reducer';
 
 import Burger           from '../burger/burger.component';
 import BuildControls    from '../burger/build-controls/build-controls.component';
@@ -13,10 +15,11 @@ import Modal            from '../ui/modal/modal.component';
 import Spinner          from '../ui/spinner/spinner.component';
 import withErrorHandler from '../error-handler/error-handler.component';
 
-interface PropTypes extends StoreState, RouteComponentProps<{}> {
+interface PropTypes extends OrderState, BurgerBuilderState, RouteComponentProps<{}> {
   onIngredientAdded:   (name: string) => Dispatch<actions.BurgerBuilderAction>;
   onIngredientRemoved: (name: string) => Dispatch<actions.BurgerBuilderAction>;
   initIngredients:     ()             => Dispatch<actions.BurgerBuilderAction>;
+  initPurchase:        ()             => Dispatch<actions.OrderAction>;
 }
 
 interface State {
@@ -36,7 +39,10 @@ class BurgerBuilder extends React.Component<PropTypes, State> {
 
   public purchaseCancelHandler = (): void => this.setState({ purchasing: false });
 
-  public purchaseContinueHandler = (): void => this.props.history.push('/checkout');
+  public purchaseContinueHandler = (): void => {
+    this.props.initPurchase();
+    this.props.history.push('/checkout');
+  };
 
   public render(): JSX.Element {
     const errJSX: JSX.Element = (
@@ -77,16 +83,18 @@ class BurgerBuilder extends React.Component<PropTypes, State> {
   }
 }
 
-const mapStateToProps = ({ burgerBuilder: state}: any) => ({
+const mapStateToProps = ({ burgerBuilder: state}: AppState) => ({
   ingredients: state.ingredients,
   totalPrice:  state.totalPrice,
   error:       state.error
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<actions.BurgerBuilderAction>) => ({
-  onIngredientAdded:   (name: string) => dispatch(actions.addIngredient(name)),
-  onIngredientRemoved: (name: string) => dispatch(actions.removeIngredient(name)),
-  initIngredients:     ()             => dispatch(actions.initIngredients())
+const mapDispatchToProps =
+  (dispatch: Dispatch<actions.BurgerBuilderAction | actions.OrderAction>) => ({
+    onIngredientAdded:   (name: string) => dispatch(actions.addIngredient(name)),
+    onIngredientRemoved: (name: string) => dispatch(actions.removeIngredient(name)),
+    initIngredients:     ()             => dispatch(actions.initIngredients()),
+    initPurchase:        ()             => dispatch(actions.initPurchase())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(

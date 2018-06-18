@@ -41,10 +41,11 @@ export const removeIngredient: ActionCreator<IngredientRemoved> =
 });
 
 const setIngredients: ActionCreator<IngredientsSet> =
-  (ingredients: object): IngredientsSet => ({
-    'type': types.SET_INGREDIENTS,
-     payload: ingredients
-});
+  (ingredients: object): IngredientsSet => {
+    return {
+      'type': types.SET_INGREDIENTS,
+       payload: ingredients
+}};
 
 const fetchIngredientsFailed: ActionCreator<IngredientsFetchFailed> =
   (): IngredientsFetchFailed => ({

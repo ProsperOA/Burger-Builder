@@ -6,12 +6,12 @@ import OrderReducer, {
   StoreState as OrderState
 } from '../reducers/order.reducer';
 
-export interface ApplcationState {
+export interface AppState {
   burgerBuilder: BurgerBuilderState;
   order:         OrderState;
 }
 
-const rootReducer: Reducer<ApplcationState> = combineReducers<ApplcationState>({
+const rootReducer: Reducer<AppState> = combineReducers<AppState>({
   burgerBuilder: BurgerBuilderReducer,
   order:         OrderReducer
 });

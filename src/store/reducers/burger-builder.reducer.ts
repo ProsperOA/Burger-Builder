@@ -1,17 +1,17 @@
 import { Reducer } from 'redux';
 import * as types from '../actions/types';
 import { BurgerBuilderAction } from '../actions/burger-builder.actions';
-import { INGREDIENT_PRICES } from '../../models/ingredient.model';
+import { INGREDIENT_PRICES, BASE_BURGER_PRICE } from '../../models/ingredient.model';
 
 export interface StoreState {
-  ingredients: any;
+  ingredients: {[name: string]: number};
   totalPrice:  number;
   error:       boolean;
 }
 
 export const initialState: Readonly<StoreState> = {
   ingredients: null,
-  totalPrice:  4,
+  totalPrice:  BASE_BURGER_PRICE,
   error:       false
 };
 
@@ -58,7 +58,13 @@ const reducer: Reducer = (state: StoreState = initialState, action: BurgerBuilde
     case types.REMOVE_INGREDIENT:
       return editIngredients(IngredientMethods.remove, state, action.payload);
     case types.SET_INGREDIENTS:
-      return {...state, ingredients: action.payload, error: false};
+      const { salad, bacon, cheese, meat } = action.payload as any;
+      return {
+        ...state,
+        ingredients: { salad, bacon, cheese, meat },
+        totalPrice: BASE_BURGER_PRICE,
+        error: false
+      };
     case types.FETCH_INGREDIENTS_FAILED:
       return {...state, error: true};
     default:

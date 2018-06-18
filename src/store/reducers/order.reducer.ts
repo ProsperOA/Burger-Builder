@@ -4,7 +4,7 @@ import { OrderAction } from '../actions/order.actions';
 import * as types      from '../actions/types';
 
 export interface StoreState {
-  orders:    any;
+  orders:    any[];
   loading:   boolean;
   purchased: boolean;
 }
@@ -15,6 +15,16 @@ const initialState: Readonly<StoreState> = {
   purchased: false
 };
 
+const purchaseBurgerSuccess = (state: StoreState, { orderData, orderID }: any): StoreState => ({
+  ...state,
+  loading:   false,
+  purchased: true,
+  orders: state.orders.concat({
+    ...orderData,
+    id: orderID,
+  })
+});
+
 const reducer: Reducer = (state: StoreState = initialState, action: OrderAction): StoreState => {
   switch (action.type) {
     case types.PURCHASE_INIT:
@@ -22,15 +32,7 @@ const reducer: Reducer = (state: StoreState = initialState, action: OrderAction)
     case types.PURCHASE_BURGER_START:
       return {...state, loading: true};
     case types.PURCHASE_BURGER_SUCCESS:
-      return {
-        ...state,
-        loading:   false,
-        purchased: true,
-        orders: state.orders.concat({
-          ...action.payload.orderData,
-          id: action.payload.orderID,
-        })
-      };
+      return purchaseBurgerSuccess(state, action.payload);
     case types.PURCHASE_BURGER_FAILED:
       return {...state, loading: false};
     case types.FETCH_ORDERS_START:

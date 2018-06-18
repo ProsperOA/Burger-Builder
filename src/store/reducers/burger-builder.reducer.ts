@@ -51,6 +51,18 @@ const editIngredients = (
   };
 };
 
+const setIngredients = (
+  state: StoreState,
+  { salad, bacon, cheese, meat }: any
+): StoreState => {
+  return {
+    ...state,
+    ingredients: { salad, bacon, cheese, meat },
+    totalPrice: BASE_BURGER_PRICE,
+    error: false
+  };
+}
+
 const reducer: Reducer = (state: StoreState = initialState, action: BurgerBuilderAction): StoreState => {
   switch (action.type) {
     case types.ADD_INGREDIENT:
@@ -58,17 +70,11 @@ const reducer: Reducer = (state: StoreState = initialState, action: BurgerBuilde
     case types.REMOVE_INGREDIENT:
       return editIngredients(IngredientMethods.remove, state, action.payload);
     case types.SET_INGREDIENTS:
-      const { salad, bacon, cheese, meat } = action.payload as any;
-      return {
-        ...state,
-        ingredients: { salad, bacon, cheese, meat },
-        totalPrice: BASE_BURGER_PRICE,
-        error: false
-      };
+      return setIngredients(state, action.payload);
     case types.FETCH_INGREDIENTS_FAILED:
       return {...state, error: true};
     default:
-      break;
+      return state;
   }
 
   return state;

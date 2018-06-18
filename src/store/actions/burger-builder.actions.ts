@@ -40,13 +40,13 @@ export const removeIngredient: ActionCreator<IngredientRemoved> =
      payload: ingredientName
 });
 
-export const setIngredients: ActionCreator<IngredientsSet> =
+const setIngredients: ActionCreator<IngredientsSet> =
   (ingredients: object): IngredientsSet => ({
     'type': types.SET_INGREDIENTS,
      payload: ingredients
 });
 
-export const fetchIngredientsFailed: ActionCreator<IngredientsFetchFailed> =
+const fetchIngredientsFailed: ActionCreator<IngredientsFetchFailed> =
   (): IngredientsFetchFailed => ({
     'type': types.FETCH_INGREDIENTS_FAILED
 });

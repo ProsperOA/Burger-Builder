@@ -1,11 +1,13 @@
 export {
+  BurgerBuilderAction,
   addIngredient,
   removeIngredient,
-  initIngredients,
-  BurgerBuilderAction
+  initIngredients
 } from './burger-builder.actions';
 
 export {
+  OrderAction,
+  initPurchase,
   purchaseBurger,
-  OrderActions
+  fetchOrders,
 } from './order.actions';

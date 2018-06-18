@@ -10,11 +10,13 @@ import { StoreState as BurgerBuilderState } from '../../../store/reducers/burger
 
 import * as actions     from '../../../store/actions/order.actions';
 import * as styles      from './contact-data.component.css';
-import FormControl      from '../../../models/form-control.model';
 import Button           from '../../ui/button/button.component';
 import Spinner          from '../../ui/spinner/spinner.component';
-import Input            from '../../ui/input/input.component';
 import withErrorHandler from '../../error-handler/error-handler.component';
+import FormControl, {
+  formControlToInput,
+  validateFormControl
+} from '../../../models/form-control.model';
 
 interface PropTypes extends OrderState, BurgerBuilderState, RouteComponentProps<{}> {
   onOrderBurger: (orderData: object) => Dispatch<actions.OrderAction>;
@@ -113,7 +115,7 @@ class ContactData extends React.Component<PropTypes, State> {
 
     updatedFormElement.touched = true;
     updatedFormElement.value   = e.currentTarget.value;
-    updatedFormElement.valid   = this.validate(
+    updatedFormElement.valid   = validateFormControl(
       updatedFormElement.value,
       updatedFormElement.validation
     );
@@ -129,53 +131,18 @@ class ContactData extends React.Component<PropTypes, State> {
     });
   }
 
-  public validate = (value: any, rules: any): boolean => {
-    let valid: boolean = true;
-
-    if (!rules) return valid;
-
-    if (rules.required) {
-      valid = value.trim() !== '' && valid;
-    }
-
-    if (rules.minLength) {
-      valid = value.length >= rules.minLength && valid;
-    }
-
-    if (rules.maxLength) {
-      valid = value.length <= rules.maxLength && valid;
-    }
-
-    return valid;
-  }
 
   public render(): JSX.Element {
-    const formElements: any[] = [];
-
-    for (const key of Object.keys(this.state.orderForm)) {
-      formElements.push({
-        id:     key,
-        config: this.state.orderForm[key]
-      });
-    }
-
     return (
       <div className={styles.ContactData}>
         <h4>Enter you contact data</h4>
         {this.props.loading ? <Spinner /> :
           <form>
-            {formElements.map(element => (
-              <Input
-                key={element.id}
-                elementType={element.config.elementType}
-                elementConfig={element.config.elementConfig}
-                placeholder={element.config.placeholder}
-                value={element.config.value}
-                touched={element.config.touched}
-                shouldValidate={element.config.validation}
-                invalid={!element.config.valid}
-                changed={this.inputChangedHandler.bind(this, element.id)} />
-            ))}
+            {formControlToInput(
+              this.state.orderForm,
+              this.inputChangedHandler,
+              this
+            ).map(input => input)}
             <Button
               buttonType="Success"
               clicked={this.orderHandler}

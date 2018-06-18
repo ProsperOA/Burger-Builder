@@ -1,22 +1,26 @@
-import * as React                          from 'react';
-import { connect                         } from 'react-redux';
-import { cloneDeep                       } from 'lodash';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
-import axios                               from '../../../axios-instances/orders.instance';;
-import { StoreState                      } from '../../../store/reducers/burger-builder.reducer';
+import * as React                           from 'react';
+import { connect                          } from 'react-redux';
+import { Dispatch                         } from 'redux';
+import { cloneDeep                        } from 'lodash';
+import axios                                from '../../../axios-instances/orders.instance';;
+import { StoreState as OrderState         } from '../../../store/reducers/order.reducer';
+import { StoreState as BurgerBuilderState } from '../../../store/reducers/burger-builder.reducer';
 
-import * as styles from './contact-data.component.css';
-import FormControl from '../../../models/form-control.model';
-import Button      from '../../ui/button/button.component';
-import Spinner     from '../../ui/spinner/spinner.component';
-import Input       from '../../ui/input/input.component';
+import * as actions     from '../../../store/actions/order.actions';
+import * as styles      from './contact-data.component.css';
+import FormControl      from '../../../models/form-control.model';
+import Button           from '../../ui/button/button.component';
+import Spinner          from '../../ui/spinner/spinner.component';
+import Input            from '../../ui/input/input.component';
+import withErrorHandler from '../../error-handler/error-handler.component';
 
-interface PropTypes extends StoreState, RouteComponentProps<{}>{};
+interface PropTypes extends OrderState, BurgerBuilderState {
+  onOrderBurger: (orderData: object) => Dispatch<actions.OrderActions>;
+}
 
 interface State {
   orderForm:   {[name: string]: FormControl};
   formIsValid: boolean;
-  loading:     boolean;
 }
 
 class ContactData extends React.Component<PropTypes, State> {
@@ -76,12 +80,10 @@ class ContactData extends React.Component<PropTypes, State> {
       }
     },
     formIsValid: false,
-    loading: false
   }
 
   public orderHandler = (e: React.FormEvent): void => {
     e.preventDefault();
-    this.setState({ loading: true });
 
     const formData: any = {};
 
@@ -95,12 +97,7 @@ class ContactData extends React.Component<PropTypes, State> {
       orderData:   formData
     };
 
-    axios.post('/orders.json', order)
-      .then((res: any) => {
-        this.setState({ loading: false });
-        this.props.history.push('/');
-      })
-      .catch((err: any) => this.setState({ loading: false }));
+    this.props.onOrderBurger(order);
   }
 
   public inputChangedHandler = (
@@ -163,7 +160,7 @@ class ContactData extends React.Component<PropTypes, State> {
     return (
       <div className={styles.ContactData}>
         <h4>Enter you contact data</h4>
-        {this.state.loading ? <Spinner /> :
+        {this.props.loading ? <Spinner /> :
           <form>
             {formElements.map(element => (
               <Input
@@ -189,10 +186,16 @@ class ContactData extends React.Component<PropTypes, State> {
   }
 }
 
-const mapStateToProps = ({ burgerBuilder: { ingredients, totalPrice }}: any) => ({
-  ingredients, totalPrice
+const mapStateToProps = (state: any) => ({
+  ingredients: state.burgerBuilder.ingredients,
+  totalPrice:  state.burgerBuilder.totalPrice,
+  loading:     state.order.loading
 });
 
-export default connect(mapStateToProps, null)(
-  withRouter(ContactData)
+const mapDispatchToProps = (dispatch: Dispatch<actions.OrderActions>) => ({
+  onOrderBurger: (orderData: object) => dispatch(actions.purchaseBurger(orderData))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withErrorHandler(ContactData, axios)
 );

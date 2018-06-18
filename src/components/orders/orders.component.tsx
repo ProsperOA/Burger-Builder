@@ -12,7 +12,7 @@ interface State {
 }
 
 class Orders extends React.Component<{}, State> {
-  public state: State = {
+  public state: Readonly<State> = {
     orders: [],
     loading: true
   };

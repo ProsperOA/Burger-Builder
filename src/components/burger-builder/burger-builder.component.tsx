@@ -24,7 +24,7 @@ interface State {
 }
 
 class BurgerBuilder extends React.Component<PropTypes, State> {
-  public state: State = { purchasing: false };
+  public state: Readonly<State> = { purchasing: false };
 
   public componentDidMount(): void {
     this.props.initIngredients();

@@ -20,7 +20,7 @@ interface State {
 }
 
 class ContactData extends React.Component<PropTypes, State> {
-  public state: State = {
+  public state: Readonly<State> = {
     orderForm: {
       name: {
         elementType: 'input',

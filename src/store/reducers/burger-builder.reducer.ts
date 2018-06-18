@@ -4,12 +4,12 @@ import { BurgerBuilderAction } from '../actions/burger-builder.actions';
 import { INGREDIENT_PRICES } from '../../models/ingredient.model';
 
 export interface StoreState {
-  ingredients:  any;
-  totalPrice:   number;
-  error:        boolean;
+  readonly ingredients: any;
+  readonly totalPrice:  number;
+  readonly error:       boolean;
 }
 
-export const initialState: StoreState = {
+export const initialState: Readonly<StoreState> = {
   ingredients: null,
   totalPrice:  4,
   error:       false

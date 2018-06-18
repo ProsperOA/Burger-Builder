@@ -13,7 +13,7 @@ interface State {
 }
 
 class Layout extends React.Component<PropTypes, State> {
-  public state = {showSideDrawer: false};
+  public state: Readonly<State> = { showSideDrawer: false };
 
   public sideDrawerClosedHandler = (): void => this.setState({ showSideDrawer: false });
 

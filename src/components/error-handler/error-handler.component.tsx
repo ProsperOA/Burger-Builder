@@ -16,23 +16,25 @@ interface State {
 
 const WithErrorHandler = (Component: React.ComponentClass, instance: AxiosInstance): React.ComponentClass => {
   return class extends React.Component<any, State> {
-    public state: State = {
+    public state: Readonly<State> = {
       error:               null,
       requestInterceptor:  null,
       responseInterceptor: null
     };
 
     public componentWillMount(): void {
-      this.state.requestInterceptor = instance.interceptors.request.use(
+      const requestInterceptor: number = instance.interceptors.request.use(
         (req: AxiosRequestConfig) => {
           this.setState({ error: null });
           return req;
         },
         (error: AxiosError) => this.setState({ error }));
 
-      this.state.responseInterceptor = instance.interceptors.response.use(
+      const responseInterceptor: number = instance.interceptors.response.use(
         (res:   AxiosResponse) => res,
         (error: AxiosError) => this.setState({ error }));
+
+      this.setState({ requestInterceptor, responseInterceptor });
     };
 
     public componentWillUnmount(): void {

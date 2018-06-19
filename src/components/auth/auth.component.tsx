@@ -1,21 +1,25 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { cloneDeep } from 'lodash';
+import { AppState } from '../../store/reducers';
+import { StoreState } from '../../store/reducers/auth.reducer';
 import * as actions from '../../store/actions/auth.actions';
 
 import * as styles from './auth.component.css';
 import Button      from '../ui/button/button.component';
+import Spinner     from '../ui/spinner/spinner.component';
 import FormControl, {
   formControlToInput,
   validateFormControl
 } from '../../models/form-control.model';
 
-interface PropTypes {
-  auth: (email: string, password: string) => Dispatch<actions.AuthAction>;
+interface PropTypes extends StoreState {
+  auth: (email: string, password: string, isSignup: boolean) => Dispatch<actions.AuthAction>;
 }
 
 interface State {
   controls: {[name: string]: FormControl};
+  isSignup: boolean;
 }
 
 class Auth extends React.Component<PropTypes, State> {
@@ -50,8 +54,13 @@ class Auth extends React.Component<PropTypes, State> {
         valid: false,
         touched: false
       }
-    }
+    },
+    isSignup: true
   }
+
+  public switchAuthMode = () => {
+    this.setState((prevState: State) => ({ isSignup: !prevState.isSignup }));
+  };
 
   public inputChangedHandler = (
     controlName: string,
@@ -76,31 +85,46 @@ class Auth extends React.Component<PropTypes, State> {
 
     this.props.auth(
       this.state.controls.email.value,
-      this.state.controls.password.value
+      this.state.controls.password.value,
+      this.state.isSignup
     );
   };
 
   public render(): JSX.Element {
     return (
       <div className={styles.Auth}>
-        <form onSubmit={this.submitHandler}>
-          {formControlToInput(
-            this.state.controls,
-            this.inputChangedHandler,
-            this
-          ).map(input => input)}
-          <Button
-            buttonType="Success">
-            Submit
-          </Button>
-        </form>
+        {this.props.error && <p>{this.props.error.message}</p>}
+        {this.props.loading ? <Spinner /> :
+          <form onSubmit={this.submitHandler}>
+            {formControlToInput(
+              this.state.controls,
+              this.inputChangedHandler,
+              this
+            ).map(input => input)}
+            <Button
+              submit={true}
+              buttonType="Success">
+              Submit
+            </Button>
+            <Button
+              buttonType="Danger"
+              clicked={this.switchAuthMode}>
+              Switch to {this.state.isSignup ? 'Signin' : 'Signup'}
+            </Button>
+          </form>}
       </div>
     );
   }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<actions.AuthAction>) => ({
-  auth: (email: string, password: string) => dispatch(actions.auth(email, password))
+const mapStateToProps = ({ auth: { loading, error }}: AppState) => ({
+  loading, error
 });
 
-export default connect(null, mapDispatchToProps)(Auth);
+const mapDispatchToProps = (dispatch: Dispatch<actions.AuthAction>) => ({
+  auth: (email: string, password: string, isSignup: boolean) => {
+    dispatch(actions.auth(email, password, isSignup))
+  }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);

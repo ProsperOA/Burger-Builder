@@ -42,3 +42,6 @@ export type  AUTH_SUCCESS =  typeof AUTH_SUCCESS;
 
 export const AUTH_FAIL = 'AUTH_FAIL';
 export type  AUTH_FAIL =  typeof AUTH_FAIL;
+
+export const AUTH_LOGOUT = 'AUTH_LOGOUT';
+export type  AUTH_LOGOUT =  typeof AUTH_LOGOUT;

@@ -1,6 +1,7 @@
 import { Action, ActionCreator, Dispatch } from 'redux';
 import { AxiosResponse, AxiosError } from 'axios';
 import axios from '../../axios-instances/orders.instance';
+import { AppState } from '../reducers';
 import * as types from './types';
 
 interface PurchaseInit extends Action {
@@ -76,20 +77,21 @@ export const purchaseBurger = (orderData: object): any => (dispatch: Dispatch<Or
     .catch((err: AxiosError)    => dispatch(purchaseBurgerFail(err)));
 };
 
-export const fetchOrders = (): any => (dispatch: Dispatch<OrderAction>): void => {
-  dispatch(fetchOrdersStart());
+export const fetchOrders = (): any =>
+  (dispatch: Dispatch<OrderAction>, getState: () => AppState): void => {
+    dispatch(fetchOrdersStart());
 
-  axios.get('/orders.json')
-    .then((res: AxiosResponse) => {
-      const fetchedOrders: any[] = [];
+    axios.get('/orders.json?auth=' + getState().auth.token)
+      .then((res: AxiosResponse) => {
+        const fetchedOrders: any[] = [];
 
-      for (const key of Object.keys(res.data)) {
-        fetchedOrders.push({ id: key, ...res.data[key] });
-      }
+        for (const key of Object.keys(res.data)) {
+          fetchedOrders.push({ id: key, ...res.data[key] });
+        }
 
-      dispatch(fetchOrdersSuccess(fetchedOrders));
-    })
-    .catch((err: AxiosError) => dispatch(fetchOrdersFailed(err)));
+        dispatch(fetchOrdersSuccess(fetchedOrders));
+      })
+      .catch((err: AxiosError) => dispatch(fetchOrdersFailed(err)));
 };
 
 const fetchOrdersStart: ActionCreator<FetchOrdersStart> =

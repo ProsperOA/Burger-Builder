@@ -8,10 +8,12 @@ interface PropTypes {
   children:   any;
   disabled?:  boolean;
   clicked?:   any;
+  submit?:    boolean;
 }
 
 const Button: React.SFC<PropTypes> = (props: PropTypes): JSX.Element => (
   <button
+    type={props.submit ? 'submit' : 'button'}
     className={[styles.Button, styles[props.buttonType]].join(' ')}
     onClick={props.clicked}
     disabled={props.disabled}>

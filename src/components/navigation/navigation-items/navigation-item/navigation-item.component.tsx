@@ -12,7 +12,6 @@ interface PropTypes {
 }
 
 const NavigationItem: React.SFC<PropTypes> = (props: PropTypes): JSX.Element => {
-  console.log(props)
   return <li className={styles.NavigationItem}>
     {props.anchor
       ? <a onClick={props.clicked}>{props.children}</a>

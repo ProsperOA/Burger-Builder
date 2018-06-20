@@ -80,8 +80,9 @@ export const purchaseBurger = (orderData: object): any => (dispatch: Dispatch<Or
 export const fetchOrders = (): any =>
   (dispatch: Dispatch<OrderAction>, getState: () => AppState): void => {
     dispatch(fetchOrdersStart());
+    const { token, userID } = getState().auth;
 
-    axios.get('/orders.json?auth=' + getState().auth.token)
+    axios.get(`/orders.json?auth=${token}&orderBy="userID"&equalTo="${userID}"`)
       .then((res: AxiosResponse) => {
         const fetchedOrders: any[] = [];
 

@@ -93,7 +93,7 @@ export const auth = (email: string, password: string, isSignup: boolean): any =>
         localStorage.setItem('expirationDate', expirationDate);
         localStorage.setItem('userID',         data.localId);
 
-        dispatch(authSuccess(data.idToken, data.userId));
+        dispatch(authSuccess(data.idToken, data.localId));
         dispatch(checkAuthTimeout(+data.expiresIn))
       })
       .catch((err: AxiosError) => dispatch(authFail(err.response.data.error)));
@@ -117,12 +117,10 @@ export const checkAuthState = (): any => (dispatch: Dispatch<AuthAction>): void 
     else {
       const userID: string = localStorage.getItem('userID');
 
+      dispatch(authSuccess(token, userID));
       dispatch(checkAuthTimeout(
         (expirationDate.getTime() - new Date().getTime()) / 1000
       ));
-      dispatch(authSuccess(token, userID));
     }
-
-    dispatch(authSuccess());
   }
 };

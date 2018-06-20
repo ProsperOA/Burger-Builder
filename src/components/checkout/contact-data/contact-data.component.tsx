@@ -1,7 +1,7 @@
 import * as React                           from 'react';
 import { connect                          } from 'react-redux';
 import { Dispatch                         } from 'redux';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps              } from 'react-router-dom';
 import { cloneDeep                        } from 'lodash';
 import axios                                from '../../../axios-instances/orders.instance';
 import { AppState                         } from '../../../store/reducers';
@@ -19,6 +19,7 @@ import FormControl, {
 } from '../../../models/form-control.model';
 
 interface PropTypes extends OrderState, BurgerBuilderState, RouteComponentProps<{}> {
+  userID:      string;
   onOrderBurger: (orderData: object) => Dispatch<actions.OrderAction>;
 }
 
@@ -96,6 +97,7 @@ class ContactData extends React.Component<PropTypes, State> {
     }
 
     const order = {
+      userID:      this.props.userID,
       ingredients: this.props.ingredients,
       price:       this.props.totalPrice,
       orderData:   formData
@@ -156,6 +158,7 @@ class ContactData extends React.Component<PropTypes, State> {
 }
 
 const mapStateToProps = (state: AppState) => ({
+  userID:      state.auth.userID,
   ingredients: state.burgerBuilder.ingredients,
   totalPrice:  state.burgerBuilder.totalPrice,
   loading:     state.order.loading

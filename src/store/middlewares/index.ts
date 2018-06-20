@@ -9,8 +9,6 @@ import {
 import thunk from 'redux-thunk';
 
 const logger: Middleware = (s: Store) => (next: Dispatch) => (action: Action) => {
-  console.log(action);
-  console.log(s.getState);
   return next(action);
 }
 

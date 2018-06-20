@@ -1,5 +1,8 @@
 export {
   BurgerBuilderAction,
+  IngredientAdded,
+  IngredientRemoved,
+  IngredientsSet,
   addIngredient,
   removeIngredient,
   initIngredients
@@ -7,12 +10,23 @@ export {
 
 export {
   OrderAction,
+  PurchaseInit,
+  PurchaseBurgerStart,
+  PurchaseBurgerSuccess,
+  PurchaseBurgerFail,
+  FetchOrdersStart,
+  FetchOrdersSuccess,
+  FetchOrdersFailed,
   initPurchase,
   purchaseBurger,
-  fetchOrders,
+  fetchOrders
 } from './order.actions';
 
 export {
   AuthAction,
-  auth
+  AuthLogout,
+  SetAuthRedirectPath,
+  auth,
+  logout,
+  setAuthRedirectPath
 } from './auth.actions';

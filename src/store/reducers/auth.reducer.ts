@@ -3,17 +3,19 @@ import * as types from '../actions/types';
 import { AuthAction } from '../actions/auth.actions';
 
 export interface StoreState {
-  token:   string;
-  userID:  string;
-  error:   any;
-  loading: boolean;
+  token:            string;
+  userID:           string;
+  error:            any;
+  loading:          boolean;
+  authRedirectPath: string;
 }
 
 const initialState: Readonly<StoreState> = {
-  token:   null,
-  userID:  null,
-  error:   null,
-  loading: false
+  token:            null,
+  userID:           null,
+  error:            null,
+  loading:          false,
+  authRedirectPath: '/'
 };
 
 const reducer: Reducer = (state: StoreState = initialState, action: AuthAction): StoreState => {
@@ -32,6 +34,8 @@ const reducer: Reducer = (state: StoreState = initialState, action: AuthAction):
       return {...state, error: action.payload, loading: false};
     case types.AUTH_LOGOUT:
       return {...state, token: null, userID: null};
+    case types.SET_AUTH_REDIRECT_PATH:
+      return {...state, authRedirectPath: action.payload};
     default:
       return state;
   }

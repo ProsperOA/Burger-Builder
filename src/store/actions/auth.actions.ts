@@ -7,11 +7,11 @@ const FIREBASE_AUTH_URL = 'https://www.googleapis.com/identitytoolkit/v3/relying
 
 const API_KEY = 'AIzaSyBiiphxBuNTSQFFKolhU5uGfPEnbP07OAQ';
 
-interface AuthStart extends Action {
+export interface AuthStart extends Action {
   'type': types.AUTH_START
 }
 
-interface AuthSuccess extends Action {
+export interface AuthSuccess extends Action {
   'type':   types.AUTH_SUCCESS;
    payload: {
      token:  string;
@@ -24,15 +24,21 @@ interface AuthFail extends Action {
    payload: AxiosError;
 }
 
-interface AuthLogout extends Action {
+export interface AuthLogout extends Action {
   'type': types.AUTH_LOGOUT;
+}
+
+export interface SetAuthRedirectPath extends Action {
+  'type':  types.SET_AUTH_REDIRECT_PATH;
+  payload: string;
 }
 
 export type AuthAction =
   | AuthStart
   | AuthSuccess
   | AuthFail
-  | AuthLogout;
+  | AuthLogout
+  | SetAuthRedirectPath;
 
 export const authStart: ActionCreator<AuthStart> = (): AuthStart => ({
   'type': types.AUTH_START
@@ -52,6 +58,12 @@ export const authFail: ActionCreator<AuthFail> =
 
 export const logout: ActionCreator<AuthLogout> = (): AuthLogout => ({
   'type': types.AUTH_LOGOUT
+});
+
+export const setAuthRedirectPath: ActionCreator<SetAuthRedirectPath> =
+  (path: string): SetAuthRedirectPath => ({
+    'type':   types.SET_AUTH_REDIRECT_PATH,
+     payload: path
 });
 
 export const auth = (email: string, password: string, isSignup: boolean): any =>
@@ -78,4 +90,3 @@ export const auth = (email: string, password: string, isSignup: boolean): any =>
 export const checkAuthTimeout = (expirationTime: number): any => (dispatch: Dispatch): void => {
   setTimeout(() => dispatch(logout()), expirationTime * 1000);
 };
-

@@ -5,19 +5,24 @@ import * as styles from './navigation-item.component.css';
 
 interface PropTypes {
   children: string;
-  link:     string;
+  link?:    string;
   active?:  boolean;
+  anchor?:  boolean;
+  clicked?: any
 }
 
-const NavigationItem: React.SFC<PropTypes> = (props: PropTypes): JSX.Element => (
-  <li className={styles.NavigationItem}>
-    <NavLink
-      to={props.link}
-      exact={true}
-      activeClassName={styles.active}>
-      {props.children}
-    </NavLink>
+const NavigationItem: React.SFC<PropTypes> = (props: PropTypes): JSX.Element => {
+  console.log(props)
+  return <li className={styles.NavigationItem}>
+    {props.anchor
+      ? <a onClick={props.clicked}>{props.children}</a>
+      : <NavLink
+          to={props.link}
+          exact={true}
+          activeClassName={styles.active}>
+          {props.children}
+        </NavLink>}
   </li>
-);
+};
 
 export default NavigationItem;

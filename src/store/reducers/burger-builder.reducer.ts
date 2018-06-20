@@ -6,12 +6,14 @@ import { INGREDIENT_PRICES, BASE_BURGER_PRICE } from '../../models/ingredient.mo
 export interface StoreState {
   ingredients: {[name: string]: number};
   totalPrice:  number;
+  building:    boolean;
   error:       boolean;
 }
 
 export const initialState: Readonly<StoreState> = {
   ingredients: null,
   totalPrice:  BASE_BURGER_PRICE,
+  building:    false,
   error:       false
 };
 
@@ -47,7 +49,8 @@ const editIngredients = (
       ...state.ingredients,
       ...updatedIngrdient
     },
-    totalPrice: updatedPrice
+    totalPrice: updatedPrice,
+    building:   true
   };
 };
 
@@ -58,8 +61,9 @@ const setIngredients = (
   return {
     ...state,
     ingredients: { salad, bacon, cheese, meat },
-    totalPrice: BASE_BURGER_PRICE,
-    error: false
+    totalPrice:  BASE_BURGER_PRICE,
+    building:    false,
+    error:       false
   };
 }
 
@@ -76,8 +80,6 @@ const reducer: Reducer = (state: StoreState = initialState, action: BurgerBuilde
     default:
       return state;
   }
-
-  return state;
 };
 
 export default reducer;

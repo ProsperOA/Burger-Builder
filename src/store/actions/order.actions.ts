@@ -4,15 +4,15 @@ import axios from '../../axios-instances/orders.instance';
 import { AppState } from '../reducers';
 import * as types from './types';
 
-interface PurchaseInit extends Action {
+export interface PurchaseInit extends Action {
   'type': types.PURCHASE_INIT;
 }
 
-interface PurchaseBurgerStart extends Action {
+export interface PurchaseBurgerStart extends Action {
   'type': types.PURCHASE_BURGER_START;
 }
 
-interface PurchaseBurgerSuccess extends Action {
+export interface PurchaseBurgerSuccess extends Action {
   'type': types.PURCHASE_BURGER_SUCCESS;
    payload: {
      orderID:   string;
@@ -20,21 +20,21 @@ interface PurchaseBurgerSuccess extends Action {
    };
 }
 
-interface PurchaseBurgerFail extends Action {
+export interface PurchaseBurgerFail extends Action {
   'type':   types.PURCHASE_BURGER_FAILED;
    payload: AxiosError;
 }
 
-interface FetchOrdersStart extends Action {
+export interface FetchOrdersStart extends Action {
   'type':   types.FETCH_ORDERS_START;
 }
 
-interface FetchOrdersSuccess extends Action {
+export interface FetchOrdersSuccess extends Action {
   'type':   types.FETCH_ORDERS_SUCCESS;
    payload: any[];
 }
 
-interface FetchOrdersFailed extends Action {
+export interface FetchOrdersFailed extends Action {
   'type':  types.FETCH_ORDERS_FAILED;
   payload: AxiosError;
 }

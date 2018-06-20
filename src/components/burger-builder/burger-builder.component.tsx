@@ -16,10 +16,12 @@ import Spinner          from '../ui/spinner/spinner.component';
 import withErrorHandler from '../error-handler/error-handler.component';
 
 interface PropTypes extends OrderState, BurgerBuilderState, RouteComponentProps<{}> {
-  onIngredientAdded:   (name: string) => Dispatch<actions.BurgerBuilderAction>;
-  onIngredientRemoved: (name: string) => Dispatch<actions.BurgerBuilderAction>;
-  initIngredients:     ()             => Dispatch<actions.BurgerBuilderAction>;
-  initPurchase:        ()             => Dispatch<actions.OrderAction>;
+  isAuth:              boolean;
+  onIngredientAdded:   (name: string) => Dispatch<actions.IngredientAdded>;
+  onIngredientRemoved: (name: string) => Dispatch<actions.IngredientRemoved>;
+  initIngredients:     ()             => Dispatch<actions.IngredientsSet>;
+  initPurchase:        ()             => Dispatch<actions.PurchaseInit>;
+  setAuthRedirectPath: (path: string) => Dispatch<actions.SetAuthRedirectPath>;
 }
 
 interface State {
@@ -35,7 +37,15 @@ class BurgerBuilder extends React.Component<PropTypes, State> {
 
   public updatePurchaseState = (): boolean => _.sum(_.values(this.props.ingredients)) > 0;
 
-  public purchaseHandler = (): void => this.setState({ purchasing: true });
+  public purchaseHandler = (): void => {
+    if (this.props.isAuth) {
+      this.setState({ purchasing: true });
+    }
+    else {
+      this.props.setAuthRedirectPath('/checkout');
+      this.props.history.push('/auth');
+    }
+  };
 
   public purchaseCancelHandler = (): void => this.setState({ purchasing: false });
 
@@ -71,6 +81,7 @@ class BurgerBuilder extends React.Component<PropTypes, State> {
           <React.Fragment>
             <Burger ingredients={this.props.ingredients} />
             <BuildControls
+              isAuth={this.props.isAuth}
               ingredientAdded={this.props.onIngredientAdded}
               ingredientRemoved={this.props.onIngredientRemoved}
               disabled={disableInfo}
@@ -83,18 +94,24 @@ class BurgerBuilder extends React.Component<PropTypes, State> {
   }
 }
 
-const mapStateToProps = ({ burgerBuilder: state}: AppState) => ({
-  ingredients: state.ingredients,
-  totalPrice:  state.totalPrice,
-  error:       state.error
+const mapStateToProps = ({ burgerBuilder, auth }: AppState) => ({
+  ingredients: burgerBuilder.ingredients,
+  totalPrice:  burgerBuilder.totalPrice,
+  error:       burgerBuilder.error,
+  isAuth:      auth.token !== null
 });
 
 const mapDispatchToProps =
-  (dispatch: Dispatch<actions.BurgerBuilderAction | actions.OrderAction>) => ({
+  (dispatch: Dispatch<
+    | actions.BurgerBuilderAction
+    | actions.PurchaseInit
+    | actions.SetAuthRedirectPath
+  >) => ({
     onIngredientAdded:   (name: string) => dispatch(actions.addIngredient(name)),
     onIngredientRemoved: (name: string) => dispatch(actions.removeIngredient(name)),
     initIngredients:     ()             => dispatch(actions.initIngredients()),
-    initPurchase:        ()             => dispatch(actions.initPurchase())
+    initPurchase:        ()             => dispatch(actions.initPurchase()),
+    setAuthRedirectPath: (path: string) => dispatch(actions.setAuthRedirectPath(path))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(

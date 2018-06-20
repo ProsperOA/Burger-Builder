@@ -45,3 +45,6 @@ export type  AUTH_FAIL =  typeof AUTH_FAIL;
 
 export const AUTH_LOGOUT = 'AUTH_LOGOUT';
 export type  AUTH_LOGOUT =  typeof AUTH_LOGOUT;
+
+export const SET_AUTH_REDIRECT_PATH = 'SET_AUTH_REDIRECT_PATH';
+export type  SET_AUTH_REDIRECT_PATH =  typeof SET_AUTH_REDIRECT_PATH;

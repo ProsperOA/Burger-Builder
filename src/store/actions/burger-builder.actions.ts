@@ -3,22 +3,22 @@ import { AxiosResponse, AxiosError } from 'axios';
 import axios from '../../axios-instances/orders.instance';
 import * as types from '../actions/types';
 
-interface IngredientAdded extends Action {
+export interface IngredientAdded extends Action {
   'type':   types.ADD_INGREDIENT;
    payload: string;
 }
 
-interface IngredientRemoved extends Action {
+export interface IngredientRemoved extends Action {
   'type':   types.REMOVE_INGREDIENT;
    payload: string;
 }
 
-interface IngredientsSet extends Action {
+export interface IngredientsSet extends Action {
   'type':   types.SET_INGREDIENTS;
    payload: object;
 }
 
-interface IngredientsFetchFailed extends Action {
+export interface IngredientsFetchFailed extends Action {
   'type': types.FETCH_INGREDIENTS_FAILED;
 }
 

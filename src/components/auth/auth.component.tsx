@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
+import { Redirect } from 'react-router-dom';
+import { AxiosError } from 'axios';
 import { cloneDeep } from 'lodash';
 import { AppState } from '../../store/reducers';
-import { StoreState } from '../../store/reducers/auth.reducer';
 import * as actions from '../../store/actions/auth.actions';
 
 import * as styles from './auth.component.css';
@@ -13,8 +14,14 @@ import FormControl, {
   validateFormControl
 } from '../../models/form-control.model';
 
-interface PropTypes extends StoreState {
+interface PropTypes {
+  isAuth:           boolean;
+  loading:          boolean;
+  error:            AxiosError;
+  authRedirectPath: string;
+  buildingBurger:   boolean;
   auth: (email: string, password: string, isSignup: boolean) => Dispatch<actions.AuthAction>;
+  setAuthRedirectPath: () => Dispatch<actions.SetAuthRedirectPath>;
 }
 
 interface State {
@@ -58,6 +65,12 @@ class Auth extends React.Component<PropTypes, State> {
     isSignup: true
   }
 
+  public componentDidMount(): void {
+    if (!this.props.buildingBurger && this.props.authRedirectPath !== '/') {
+      this.props.setAuthRedirectPath();
+    }
+  }
+
   public switchAuthMode = () => {
     this.setState((prevState: State) => ({ isSignup: !prevState.isSignup }));
   };
@@ -93,6 +106,7 @@ class Auth extends React.Component<PropTypes, State> {
   public render(): JSX.Element {
     return (
       <div className={styles.Auth}>
+        {this.props.isAuth && <Redirect to={this.props.authRedirectPath} />}
         {this.props.error && <p>{this.props.error.message}</p>}
         {this.props.loading ? <Spinner /> :
           <form onSubmit={this.submitHandler}>
@@ -117,14 +131,19 @@ class Auth extends React.Component<PropTypes, State> {
   }
 }
 
-const mapStateToProps = ({ auth: { loading, error }}: AppState) => ({
-  loading, error
+const mapStateToProps = ({ auth, burgerBuilder }: AppState) => ({
+  loading:          auth.loading,
+  isAuth:           auth.token !== null,
+  error:            auth.error,
+  authRedirectPath: auth.authRedirectPath,
+  buildingBurger:   burgerBuilder.building
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<actions.AuthAction>) => ({
+const mapDispatchToProps = (dispatch: any) => ({
   auth: (email: string, password: string, isSignup: boolean) => {
     dispatch(actions.auth(email, password, isSignup))
-  }
+  },
+  setAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/'))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Auth);

@@ -5,12 +5,13 @@ import BuildControl from './build-control/build-control.component';
 import Control      from '../../../models/control.model';
 
 interface PropTypes {
+  isAuth:            boolean;
+  price:             number;
   disabled:          {[key: string]: boolean};
   ingredientAdded:   (ingredient: string) => void;
   ingredientRemoved: (ingredient: string) => void;
   ordered:           () => void;
   purchaseable:      () => boolean;
-  price:             number;
 }
 
 class BuildControls extends React.Component<PropTypes, {}> {
@@ -21,7 +22,7 @@ class BuildControls extends React.Component<PropTypes, {}> {
     {label: 'Meat',   ingredient: 'meat'}
   ];
 
-  public render() {
+  public render(): JSX.Element {
     return (
       <div className={styles.BuildControls}>
         <p>Current Price <strong>${this.props.price.toFixed(2)}</strong></p>
@@ -38,7 +39,7 @@ class BuildControls extends React.Component<PropTypes, {}> {
           className={styles.OrderButton}
           disabled={!this.props.purchaseable()}
           onClick={this.props.ordered}>
-          ORDER NOW
+          {this.props.isAuth ? 'ORDER NOW' : 'SIGN UP TO ORDER'}
         </button>
       </div>
     );

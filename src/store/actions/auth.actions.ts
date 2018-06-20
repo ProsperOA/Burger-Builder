@@ -56,9 +56,13 @@ export const authFail: ActionCreator<AuthFail> =
      payload: error
 });
 
-export const logout: ActionCreator<AuthLogout> = (): AuthLogout => ({
-  'type': types.AUTH_LOGOUT
-});
+export const logout: ActionCreator<AuthLogout> = (): AuthLogout => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('expirationDate');
+  localStorage.removeItem('userID');
+
+  return { 'type': types.AUTH_LOGOUT };
+};
 
 export const setAuthRedirectPath: ActionCreator<SetAuthRedirectPath> =
   (path: string): SetAuthRedirectPath => ({
@@ -81,6 +85,14 @@ export const auth = (email: string, password: string, isSignup: boolean): any =>
 
     axios.post(authURL, authData)
       .then(({ data }: AxiosResponse) => {
+        const expirationDate: string = new Date(
+          new Date().getTime() + data.expiresIn * 1000
+        ).toString();
+
+        localStorage.setItem('token',          data.idToken);
+        localStorage.setItem('expirationDate', expirationDate);
+        localStorage.setItem('userID',         data.localId);
+
         dispatch(authSuccess(data.idToken, data.userId));
         dispatch(checkAuthTimeout(+data.expiresIn))
       })
@@ -89,4 +101,28 @@ export const auth = (email: string, password: string, isSignup: boolean): any =>
 
 export const checkAuthTimeout = (expirationTime: number): any => (dispatch: Dispatch): void => {
   setTimeout(() => dispatch(logout()), expirationTime * 1000);
+};
+
+export const checkAuthState = (): any => (dispatch: Dispatch<AuthAction>): void => {
+  const token: string = localStorage.getItem('token');
+
+  if (!token) {
+    dispatch(logout());
+  }
+  else {
+    const expirationDate: Date = new Date(localStorage.getItem('expirationDate'));
+    if (expirationDate <= new Date()) {
+      dispatch(logout());
+    }
+    else {
+      const userID: string = localStorage.getItem('userID');
+
+      dispatch(checkAuthTimeout(
+        (expirationDate.getTime() - new Date().getTime()) / 1000
+      ));
+      dispatch(authSuccess(token, userID));
+    }
+
+    dispatch(authSuccess());
+  }
 };
